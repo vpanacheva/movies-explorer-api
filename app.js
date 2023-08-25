@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable import/no-extraneous-dependencies */
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -52,12 +50,11 @@ app.use('/', routeSignin);
 
 app.use(auth);
 
-app.use(errorLogger);
-
 app.use('/users', routeUsers);
 
 app.use((req, res, next) => next(new NotFoundError('Страницы по запрошенному URL не существует')));
 app.use(errors());
 app.use(error);
+app.use(errorLogger);
 
 app.listen(PORT);

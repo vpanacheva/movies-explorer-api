@@ -107,7 +107,6 @@ function updateUser(req, res, next) {
   )
     .then((user) => {
       if (user) return res.send(user);
-
       throw new NotFoundError('Пользователь с таким id не существует');
     })
     .catch((err) => {
@@ -117,9 +116,10 @@ function updateUser(req, res, next) {
             'Введены некорректные данные при обновлении профиля',
           ),
         );
-      } else {
-        next(err);
+      } if (err.code === 11000) {
+        next(new ConflictError('Данный email уже зарегистрирован'));
       }
+      next(err);
     });
 }
 
