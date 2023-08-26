@@ -8,13 +8,12 @@ const { PORT } = require('./utils/constants');
 const { URL } = require('./utils/constants');
 const limiter = require('./middlewares/rateLimiter');
 const cors = require('./middlewares/cors');
+
+const router = require('./routes/index');
+
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const routeSignup = require('./routes/signup');
-const routeSignin = require('./routes/signin');
-const auth = require('./middlewares/auth');
-const routeUsers = require('./routes/users');
+
 const error = require('./middlewares/error');
-const NotFoundError = require('./errors/NotFoundError');
 
 mongoose.set('strictQuery', true);
 
@@ -45,16 +44,10 @@ app.get('/crash-test', () => {
 
 app.use(limiter);
 
-app.use('/', routeSignup);
-app.use('/', routeSignin);
+app.use(router);
 
-app.use(auth);
-
-app.use('/users', routeUsers);
-
-app.use((req, res, next) => next(new NotFoundError('Страницы по запрошенному URL не существует')));
+app.use(errorLogger);
 app.use(errors());
 app.use(error);
-app.use(errorLogger);
 
 app.listen(PORT);
